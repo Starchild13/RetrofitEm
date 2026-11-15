@@ -11,8 +11,16 @@ import com.starchild13.retrofitem.presentation.HomeScreen
 import com.starchild13.retrofitem.ui.theme.RetrofitEmTheme
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Main entry point Activity of the application, annotated with [@AndroidEntryPoint]
+ * to enable field and ViewModel dependency injection via Hilt.
+ */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    /**
+     * Called when the activity is starting. Sets up the Jetpack Compose UI content
+     * wrapped within [RetrofitEmTheme] and [HomeScreen].
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -28,6 +36,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-
-
