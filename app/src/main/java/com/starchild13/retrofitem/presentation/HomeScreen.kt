@@ -1,20 +1,21 @@
 package com.starchild13.retrofitem.presentation
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Refresh
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -25,9 +26,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.starchild13.retrofitem.R
 
+/**
+ * Main home screen composable that coordinates view state observation, top app bar,
+ * floating refresh action, and state-driven content rendering.
+ */
 @Composable
     fun HomeScreen() {
 
@@ -39,7 +44,11 @@ import com.starchild13.retrofitem.R
             modifier = Modifier.fillMaxSize(),
             topBar = { AppBar() },
             floatingActionButton = {
-                FloatingActionButton(onClick = { viewModel.getQuotes() }, containerColor = Color.Blue) {
+                FloatingActionButton(
+                    onClick = { viewModel.getQuotes() },
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                ) {
                     Icon(imageVector = Icons.Rounded.Refresh, contentDescription = "Refresh")
                 }
             }
@@ -48,26 +57,42 @@ import com.starchild13.retrofitem.R
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(it),
-                color = Color.Blue
+                color = MaterialTheme.colorScheme.background
             ) {
-                StateScreen(state = state)
+                StateScreen(state = state, onRetry = { viewModel.getQuotes() })
             }
         }
 
     }
 
 
+    /**
+     * Top application bar composable displaying the application logo icon and title.
+     */
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun AppBar() {
-        Row(
-            modifier = Modifier
-                .background(color = MaterialTheme.colorScheme.background)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(painter = painterResource(id = R.drawable.playstore), contentDescription = null, modifier = Modifier
-                .size(width = 63.dp, height = 63.dp)
-                .padding(7.dp))
-            Text(text = stringResource(id = R.string.app_name), style = MaterialTheme.typography.titleLarge, fontSize = 28.sp)
-        }
+        TopAppBar(
+            title = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.playstore),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(48.dp)
+                            .padding(end = 8.dp)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.app_name),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
+            },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                titleContentColor = MaterialTheme.colorScheme.onSurface
+            )
+        )
     }
